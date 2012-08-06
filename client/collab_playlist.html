@@ -1,0 +1,39 @@
+<head>
+  <title>collab_playlist</title>
+</head>
+
+<body>
+  {{> playlist}}
+  {{> addSong}}
+</body>
+
+<template name="playlist">
+  <div id="playlist">
+    <input type="button" id="add" value="Add Song" />
+    <h1>Play music</h1>
+    <div id="current">
+      <div>{{current_song}}</div>
+      <div>{{current_artist}}</div>
+      <input type="button" value="play" />
+      <input type="button" value="pause" />
+      <input type="button" value="next" />
+      <input type="button" value="prev" />
+    </div>
+    <table id="playlist">
+      {{#each queued_songs}}
+        <tr>
+          <td>{{song}}</td>
+          <td>{{artist}}</td>
+        </tr>
+      {{/each}}
+    </table>
+  </div>
+</template>
+
+<template name="addSong">
+  <div id="add_song">
+    <input type="button" id="back" value="Back" />
+    <input type="text" id="search-box" />
+    <input type="button" id="search" value="Search" />
+  </div>
+</template>
