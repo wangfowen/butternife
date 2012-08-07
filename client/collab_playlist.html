@@ -35,5 +35,13 @@
     <input type="button" id="back" value="Back" />
     <input type="text" id="search-box" />
     <input type="button" id="search" value="Search" />
+    <table id="add_list">
+      {{#each list_songs}}
+        <tr>
+          <td>{{song}}</td>
+          <td>{{artist}}</td>
+        </tr>
+      {{/each}}
+    </table>
   </div>
 </template>
