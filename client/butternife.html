@@ -1,5 +1,5 @@
 <head>
-  <title>collab_playlist</title>
+  <title>Butternife</title>
 </head>
 
 <body>
@@ -8,8 +8,8 @@
 </body>
 
 <template name="playlist">
-  <div id="playlist">
-    <input type="button" id="add" value="Add Song" />
+  <div id="playlist_view">
+    <input type="button" id="add_songs" value="Add Song" />
     <h1>Play music</h1>
     <div id="current">
       <div>{{current_song}}</div>
@@ -31,15 +31,19 @@
 </template>
 
 <template name="addSong">
-  <div id="add_song">
+  <div id="add_view">
     <input type="button" id="back" value="Back" />
-    <input type="text" id="search-box" />
-    <input type="button" id="search" value="Search" />
+    <form>
+      <input type="text" id="search_box" />
+      <input type="submit" id="search" value="Search" />
+    </form>
     <table id="add_list">
       {{#each list_songs}}
         <tr>
-          <td>{{song}}</td>
-          <td>{{artist}}</td>
+          <td class="song">{{song}}</td>
+          <td class="artist">{{artist}}</td>
+          <td class="url">{{url}}</td>
+          <td><a class="add">Add</a></td>
         </tr>
       {{/each}}
     </table>

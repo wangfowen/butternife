@@ -1,15 +1,30 @@
-Meteor.publish('playlists', function(playlist_id) {
-	return Playlists.find({_id: playlist_id});
+Meteor.publish('playlists', function(playlistId) {
+	return Playlists.find({_id: playlistId});
 })
 
-Meteor.publish('songs', function(playlist_id) {
-	return Songs.find({playlist_id: playlist_id});
+Meteor.publish('songs', function(playlistId) {
+	return Songs.find({playlistId: playlistId});
 })
 
 Meteor.methods({
-	searchMusic: function(music) {
+	searchMusic: function(music, playlistId) {
+		var future = new Future();
+
 		Meteor.http.get('https://ex.fm/api/v3/song/search/' + music + '?username=supernuber&password=password', {}, function(error, data) {
-			console.log("data", data.data.songs);
+			for (song in data.data.songs) {
+				var s = data.data.songs[song];
+
+				Songs.insert({song: s.title, 
+					artist: s.artist, 
+					album: s.album,
+					url: s.url,
+					playlistId: playlistId
+				})
+			};
+
+			future.resolver()();
 		});
+
+		Future.wait(future);
 	}
 });

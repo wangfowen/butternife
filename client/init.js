@@ -1,30 +1,28 @@
 Meteor.startup(function () {
-  var u_id = Users.insert({dj: false}),
-    p_id,
+  var uId = Users.insert({dj: false}),
+    pId,
     PlaylistRouter = Backbone.Router.extend({
       routes: {
-        ":playlist_id": "index",
-        "/": "generate_playlist",
-        "": "generate_playlist"
+        ":playlistId": "index",
+        "/": "generatePlaylist",
+        "": "generatePlaylist"
       },
-      index: function (playlist_id) {
-        Session.set("playlist_id", playlist_id);
+      index: function (playlistId) {
+        Session.set("playlistId", playlistId);
 
-        Meteor.subscribe('playlists', playlist_id);
+        Meteor.subscribe('playlists', playlistId);
 
         Meteor.autosubscribe(function() {
-          Meteor.subscribe('songs', playlist_id, function() {
-            Session.set("order", Songs.findOne({playlist_id: Session.get("playlist_id")}, {sort: {order: -1}}).order);
-          });
+          Meteor.subscribe('songs', playlistId);
         });
       },
-      generate_playlist: function() {
-        p_id = Playlists.insert({temp: false});
-        Users.update({_id: u_id}, {dj: true});
-        this.setPlaylist(p_id);
+      generatePlaylist: function() {
+        pId = Playlists.insert({temp: false, repeat: true, shuffle: false});
+        Users.update({_id: uId}, {dj: true});
+        this.setPlaylist(pId);
       },
-      setPlaylist: function (playlist_id) {
-        this.navigate(playlist_id, true);
+      setPlaylist: function (playlistId) {
+        this.navigate(playlistId, true);
       }
     });
 
@@ -32,5 +30,22 @@ Meteor.startup(function () {
 
   Backbone.history.start({pushState: true});
 
-  Session.set('user_id', u_id);
+  Session.set('userId', uId);
+
+  $('#add_view').hide();
 });
+
+var newTemp = function() {
+  var tempPlaylistId = Playlists.insert({temp: true});
+
+  Session.set('addId', tempPlaylistId);
+
+  Meteor.autosubscribe(function() {
+    Meteor.subscribe('songs', tempPlaylistId);
+  });
+};
+
+var clearTemp = function() {
+  Playlists.remove({temp: true});
+  Songs.remove({playlistId: Session.get("addId")});
+};
