@@ -15,7 +15,20 @@ as.events = {
   	clearTemp();
   	newTemp();
 
-  	Meteor.apply('searchMusic', [$('#search_box').val(), Session.get('addId')]);
+    var $spinner = $('.spinner');
+
+    $spinner.show();
+
+    var playlistId = Session.get('addId'),
+        songs = Songs.find({playlistId: playlistId});
+        
+    songs.observe({
+      added: function() {
+        $spinner.hide();
+      }
+    });
+
+  	Meteor.apply('searchMusic', [$('#search_box').val(), playlistId]);
   },
 
   'click .add': function(e) {

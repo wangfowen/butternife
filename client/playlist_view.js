@@ -5,14 +5,9 @@ pl.queued_songs = function() {
 	return songs[0] && songs.slice(1);
 }
 
-pl.current_song = function() {
-	var song = Songs.findOne({playlistId: Session.get("playlistId")}, {sort: {order: 1}});
-  return song && song.song;
-}
-
-pl.current_artist = function() {
-  var song = Songs.findOne({playlistId: Session.get("playlistId")}, {sort: {order: 1}});
-  return song && song.artist;
+pl.current = function() {
+	var songs = Songs.find({playlistId: Session.get("playlistId")}, {sort: {order: 1}}).fetch();
+  return [songs[0]];
 }
 
 

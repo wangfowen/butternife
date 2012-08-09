@@ -33,6 +33,7 @@ Meteor.startup(function () {
   Session.set('userId', uId);
 
   $('#add_view').hide();
+  $('.spinner').hide();
 });
 
 var newTemp = function() {
@@ -46,6 +47,8 @@ var newTemp = function() {
 };
 
 var clearTemp = function() {
-  Playlists.remove({temp: true});
-  Songs.remove({playlistId: Session.get("addId")});
+  var playlistId = Session.get("addId");
+  
+  Playlists.remove({temp: true, playlistId: playlistId});
+  Songs.remove({playlistId: playlistId});
 };
