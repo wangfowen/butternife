@@ -59,11 +59,11 @@ as.events = {
       var prevId = Songs.findOne({playlistId: playlistId, next: currentSong._id})._id,
           nextId = currentSong._id;
 
-      Songs.update({_id: nextId}, {$set : {prev: lastSongId}});
-      Songs.update({_id: prevId}, {$set : {next: lastSongId}});
-      Songs.update({_id: lastSongId}, {$set : {prev: prevId, next: nextId}});
+      Songs.update({_id: nextId}, {$set: {prev: lastSongId}});
+      Songs.update({_id: prevId}, {$set: {next: lastSongId}});
+      Songs.update({_id: lastSongId}, {$set: {prev: prevId, next: nextId}});
     } else {
-      Songs.update({_id: lastSongId}, {$set : {prev: lastSongId, next: lastSongId}})
+      Songs.update({_id: lastSongId}, {$set: {prev: lastSongId, next: lastSongId}})
     }
   }
 };

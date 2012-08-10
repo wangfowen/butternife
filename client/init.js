@@ -49,6 +49,8 @@ var newTemp = function() {
 var clearTemp = function() {
   var playlistId = Session.get("addId");
   
-  Playlists.remove({temp: true, playlistId: playlistId});
-  Songs.remove({playlistId: playlistId});
+  if (playlistId) {
+    Playlists.remove({temp: true, playlistId: playlistId});
+    Songs.remove({playlistId: playlistId});
+  }
 };

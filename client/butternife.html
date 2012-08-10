@@ -15,6 +15,7 @@
       {{#each current}}
       <div>{{song}}</div>
       <div>{{artist}}</div>
+      <div class="id">{{_id}}</div>
       <audio controls="controls" >
         <source src="{{url}}" />
         Your browser does not support the audio tag.
@@ -29,6 +30,8 @@
         <tr>
           <td>{{song}}</td>
           <td>{{artist}}</td>
+          <td class="id">{{_id}}</div>
+          <td><a class="delete">Delete</a></td>
         </tr>
       {{/each}}
     </table>

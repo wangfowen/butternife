@@ -12,20 +12,28 @@ pl.current = function() {
 
 
 pl.events = {
-  'click #add_songs' : function() {
+  'click #add_songs': function() {
     $('#add_view').show();
     $('#playlist_view').hide();
   },
-  'click #next' : function() {
+  'click #next': function() {
   	var currentSong = Songs.findOne({playlistId: Session.get("playlistId"), current: true});
 
-  	Songs.update({_id: currentSong._id}, {$set : {current: false}});
-  	Songs.update({_id: currentSong.next}, {$set : {current: true}});
+  	Songs.update({_id: currentSong._id}, {$set: {current: false}});
+  	Songs.update({_id: currentSong.next}, {$set: {current: true}});
   },
-  'click #prev' : function() {
+  'click #prev': function() {
   	var currentSong = Songs.findOne({playlistId: Session.get("playlistId"), current: true});
 
-  	Songs.update({_id: currentSong._id}, {$set : {current: false}});
-  	Songs.update({_id: currentSong.prev}, {$set : {current: true}});
+  	Songs.update({_id: currentSong._id}, {$set: {current: false}});
+  	Songs.update({_id: currentSong.prev}, {$set: {current: true}});
+  },
+  'click .delete': function(e) {
+    var id = $(e.target).parents('tr').children('.id').html().trim(), 
+        currentSong = Songs.findOne({_id: id});
+
+    Songs.update({_id: currentSong.prev}, {$set: {next: currentSong.next}});
+    Songs.update({_id: currentSong.next}, {$set: {prev: currentSong.prev}});
+    Songs.remove({_id: id});
   }
 };
