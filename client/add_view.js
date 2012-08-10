@@ -35,16 +35,39 @@ as.events = {
   	e.preventDefault();
   	e.stopPropagation();
 
-  	var $tr = $(e.target).parents('tr');
+  	var $tr = $(e.target).parents('tr'),
+      playlistId = Session.get("playlistId"),
+      currentSong = Songs.findOne({playlistId: playlistId, current: true}),
+      current, url, lastSongId;
 
-  	Songs.insert({song: $tr.children('.song').html(),
+    current = (currentSong !== undefined ? false : true);
+
+    url = $tr.children('.url').html();
+
+    if (url.indexOf('soundcloud') !== -1) {
+      url += (url.indexOf("?") === -1 ? "?" : "&") + "client_id=439f9fd050fe1989287ec13937c89894";
+    }
+
+  	lastSongId = Songs.insert({song: $tr.children('.song').html(),
   		artist: $tr.children('.artist').html(),
-  		url: $tr.children('.url').html(),
-  		playlistId: Session.get('playlistId')
+  		url: url,
+  		playlistId: playlistId,
+      current: current
   	});
+
+    if (!current) {
+      var prevId = Songs.findOne({playlistId: playlistId, next: currentSong._id})._id,
+          nextId = currentSong._id;
+
+      Songs.update({_id: nextId}, {$set : {prev: lastSongId}});
+      Songs.update({_id: prevId}, {$set : {next: lastSongId}});
+      Songs.update({_id: lastSongId}, {$set : {prev: prevId, next: nextId}});
+    } else {
+      Songs.update({_id: lastSongId}, {$set : {prev: lastSongId, next: lastSongId}})
+    }
   }
 };
 
 as.list_songs = function() {
-	return Songs.find({playlistId: Session.get("addId")}, {sort: {order: 1}}).fetch();
+	return Songs.find({playlistId: Session.get("addId")}).fetch();
 };
