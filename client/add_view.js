@@ -15,7 +15,8 @@ as.events = {
   	clearTemp();
   	newTemp();
 
-    var $spinner = $('.spinner');
+    var $spinner = $('.spinner'),
+        searchResult = $('#search_box').val();
 
     $spinner.show();
 
@@ -28,7 +29,8 @@ as.events = {
       }
     });
 
-  	Meteor.apply('searchMusic', [$('#search_box').val(), playlistId]);
+  	Meteor.apply('searchMusic', [searchResult, playlistId]);
+    Session.set('searchResult', searchResult);
   },
 
   'click .add': function(e) {
@@ -64,6 +66,14 @@ as.events = {
       Songs.update({_id: lastSongId}, {$set: {prev: prevId, next: nextId}});
     } else {
       Songs.update({_id: lastSongId}, {$set: {prev: lastSongId, next: lastSongId}})
+    }
+  },
+
+  'click #more': function() {
+    var start = $('#add_list').children().children('tr').length;
+
+    if (start > 0) {
+      Meteor.apply('searchMusic', [Session.get('searchResult'), Session.get('addId'), start]);
     }
   }
 };
