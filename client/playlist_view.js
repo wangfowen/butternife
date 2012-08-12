@@ -1,4 +1,5 @@
-var pl = Template.playlist;
+var pl = Template.playlist,
+    s = Template.song;
 
 pl.queued_songs = function() {
   var songs = Songs.find({playlistId: Session.get("playlistId"), current: false}).fetch();
@@ -10,6 +11,11 @@ pl.current = function() {
   return songs;
 }
 
+s.isCurrentAndDJ = function() {
+  // var user = Users.findOne({_id: Session.get("userId"), playlistId: Session.get("playlistId")});
+
+  return (this.current === true) /*&& user.dj*/;
+}
 
 pl.events = {
   'click #add_songs': function() {
@@ -17,23 +23,22 @@ pl.events = {
     $('#playlist_view').hide();
   },
   'click #next': function() {
-  	var currentSong = Songs.findOne({playlistId: Session.get("playlistId"), current: true});
-
-  	Songs.update({_id: currentSong._id}, {$set: {current: false}});
-  	Songs.update({_id: currentSong.next}, {$set: {current: true}});
+  	changeSong("next");
   },
   'click #prev': function() {
-  	var currentSong = Songs.findOne({playlistId: Session.get("playlistId"), current: true});
-
-  	Songs.update({_id: currentSong._id}, {$set: {current: false}});
-  	Songs.update({_id: currentSong.prev}, {$set: {current: true}});
+  	changeSong("prev");
   },
   'click .delete': function(e) {
-    var id = $(e.target).parents('tr').children('.id').html().trim(), 
-        currentSong = Songs.findOne({_id: id});
+    var id = $(e.target).parent().parent().children('.id').html().trim(), 
+        currentSong = Songs.findOne({_id: id}),
+        isCurrent = currentSong.current;
 
     Songs.update({_id: currentSong.prev}, {$set: {next: currentSong.next}});
     Songs.update({_id: currentSong.next}, {$set: {prev: currentSong.prev}});
+    if (isCurrent) {
+      changeSong("next");
+    }
+
     Songs.remove({_id: id});
   }
 };

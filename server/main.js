@@ -6,6 +6,10 @@ Meteor.publish('songs', function(playlistId) {
 	return Songs.find({playlistId: playlistId});
 })
 
+Meteor.publish('users', function(playlistId) {
+	return Users.find({playlistId: playlistId});
+})
+
 Meteor.methods({
 	searchMusic: function(music, playlistId, start) {
 		var future = new Future();
@@ -13,7 +17,6 @@ Meteor.methods({
 		start = start || 0;
 
 		Meteor.http.get('https://ex.fm/api/v3/song/search/' + encodeURIComponent(music) + '?results=30&start=' + start, {}, function(error, data) {
-			console.log(data);
 
 			for (song in data.data.songs) {
 				var s = data.data.songs[song];
