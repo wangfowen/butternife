@@ -38,25 +38,30 @@ Meteor.startup(function() {
   $('#add_view').hide();
   $('.spinner').hide();
 
+  var audio = document.getElementsByTagName('audio')[0];
+
+  audio.addEventListener("ended", function() {
+    changeSong("next");
+  });
+
   // window.onbeforeunload = function() {
   //   Users.remove({_id: Session.get("userId"), playlistId: Session.get("playlistId")});
   // };
 
-  testAudio = Meteor.setInterval(function() {
-    var audio = document.getElementsByTagName('audio')[0];
+  //set starting song on player
+  isSong = Meteor.setInterval(function() {
+    var currentUrl = $('#current .url');
 
-    if (audio) {
-      $(audio).removeAttr('autoplay');
-      audio.pause();
+    if (currentUrl) {
+      if (!$('audio source').attr("src")) {
+        putCurrentOnPlayer();
+        $(audio).removeAttr('autoplay');
+        audio.pause();
+      }
 
-      // audio.addEventListener("ended", function() {
-      //   changeSong("next");
-      // });
-      // breaks when is reset
-
-      Meteor.clearInterval(testAudio);
+      Meteor.clearInterval(isSong);
     }
-  }, 100);
+  }, 500);
 });
 
 var newTemp = function() {
@@ -89,6 +94,39 @@ var playable = function(url) {
 var changeSong = function(direction) {
   var currentSong = Songs.findOne({playlistId: Session.get("playlistId"), current: true});
 
+  //change new song to be the current
   Songs.update({_id: currentSong._id}, {$set: {current: false}});
-  Songs.update({_id: currentSong[direction]}, {$set: {current: true}});
+  Songs.update({_id: currentSong[direction]}, {$set: {current: true}}, function() {
+    putCurrentOnPlayer();
+  }); 
 }
+
+var deleteSong = function(song) {
+  var isCurrent = song.current;
+
+  Songs.update({_id: song.prev}, {$set: {next: song.next}});
+  Songs.update({_id: song.next}, {$set: {prev: song.prev}});
+
+  if (isCurrent) {
+    var queue = Songs.find({playlistId: Session.get("playlistId"), current: false}).fetch();
+    if (queue.length > 0) {
+      changeSong("next");
+    } else {
+      $('#player audio source').removeAttr('src');
+    }
+  }
+
+  Songs.remove({_id: song._id});
+}
+
+var putCurrentOnPlayer = function() {
+  var $current = $('#current .url'),
+      $player = $('#player audio');
+
+  $player.children('source').attr("src", $current.html());
+
+  $player[0].pause();
+  $player[0].load();
+  $player[0].play()
+}
+

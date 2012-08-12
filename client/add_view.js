@@ -45,19 +45,20 @@ as.events = {
         playlistId = Session.get("playlistId"),
         url = playable($tr.children('.url').html());
 
+    //remove song from playlist if click one already on playlist
     if ($target.hasClass('remove')) {
       var song = Songs.findOne({playlistId: playlistId, url: url});
 
-      Songs.update({_id: song.prev}, {$set: {next: song.next}});
-      Songs.update({_id: song.next}, {$set: {prev: song.prev}});
-      Songs.remove({_id: song._id});
+      deleteSong(song);
 
+    //add the song
     } else {
       var currentSong = Songs.findOne({playlistId: playlistId, current: true}),
           current, lastSongId;
 
       current = (currentSong !== undefined ? false : true);
 
+      //append song
       lastSongId = Songs.insert({song: $tr.children('.song').html(),
         artist: $tr.children('.artist').html(),
         url: url,
@@ -65,6 +66,7 @@ as.events = {
         current: current
       });
 
+      //update the prev and next if it's not the current
       if (!current) {
         var prevId = Songs.findOne({playlistId: playlistId, next: currentSong._id})._id,
             nextId = currentSong._id;
@@ -73,7 +75,8 @@ as.events = {
         Songs.update({_id: prevId}, {$set: {next: lastSongId}});
         Songs.update({_id: lastSongId}, {$set: {prev: prevId, next: nextId}});
       } else {
-        Songs.update({_id: lastSongId}, {$set: {prev: lastSongId, next: lastSongId}})
+        Songs.update({_id: lastSongId}, {$set: {prev: lastSongId, next: lastSongId}});
+        putCurrentOnPlayer();
       }
     }
 

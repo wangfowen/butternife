@@ -3,6 +3,9 @@
 </head>
 
 <body>
+  <div id="player">
+    {{> player}}
+  </div>
   <div id="playlist_view">
     {{> playlist}}
   </div>
@@ -11,16 +14,23 @@
   </div>
 </body>
 
+<template name="player">
+  {{#if isDJ}}
+    <audio controls="controls" autoplay='autoplay'>
+      <source src="" />
+      Your browser does not support the audio tag.
+    </audio>
+    <input type="button" id="next" value="next" />
+    <input type="button" id="prev" value="prev" />
+  {{/if}}
+</template>
+
 <template name="playlist">
   <input type="button" id="add_songs" value="Add Song" />
-  <h1>Play music</h1>
   <div id="current">
     {{#each current}}
       {{> song}}
     {{/each}}
-
-    <input type="button" id="next" value="next" />
-    <input type="button" id="prev" value="prev" />
   </div>
   <div id="playlist">
     {{#each queued_songs}}
@@ -30,18 +40,11 @@
 </template>
 
 <template name="song">
-<div>
   <div>{{song}}</div>
   <div>{{artist}}</div>
   <div class="id">{{_id}}</div>
   <div><a class="delete">Delete</a></div>
-  {{#if isCurrentAndDJ}}
-      <audio controls="controls" autoplay='autoplay'>
-        <source src="{{url}}" />
-        Your browser does not support the audio tag.
-      </audio>
-  {{/if}}
-</div>
+  <div class="url">{{url}}</div>
 </template>
 
 <template name="addSong">
