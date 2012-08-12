@@ -35,34 +35,38 @@ Meteor.startup(function() {
 
   Session.set('userId', uId);
 
-  $('#add_view').hide();
   $('.spinner').hide();
+  $('#back').hide();
+  $('#more').hide();
 
   var audio = document.getElementsByTagName('audio')[0];
+  
+  if (audio) {
+    audio.addEventListener("ended", function() {
+      changeSong("next");
+    });
 
-  audio.addEventListener("ended", function() {
-    changeSong("next");
-  });
+    isSong = Meteor.setInterval(function() {
+      var currentUrl = $('#current .url');
+
+      if (currentUrl) {
+        if (!$('audio source').attr("src")) {
+          putCurrentOnPlayer();
+          $(audio).removeAttr('autoplay');
+          audio.pause();
+        }
+
+        Meteor.clearInterval(isSong);
+      }
+    }, 500);
+  }
+});
 
   // window.onbeforeunload = function() {
   //   Users.remove({_id: Session.get("userId"), playlistId: Session.get("playlistId")});
   // };
 
   //set starting song on player
-  isSong = Meteor.setInterval(function() {
-    var currentUrl = $('#current .url');
-
-    if (currentUrl) {
-      if (!$('audio source').attr("src")) {
-        putCurrentOnPlayer();
-        $(audio).removeAttr('autoplay');
-        audio.pause();
-      }
-
-      Meteor.clearInterval(isSong);
-    }
-  }, 500);
-});
 
 var newTemp = function() {
   var tempPlaylistId = Playlists.insert({temp: true});
@@ -81,6 +85,8 @@ var clearTemp = function() {
     Playlists.remove({temp: true, playlistId: playlistId});
     Songs.remove({playlistId: playlistId});
   }
+
+  $('#more').hide();
 };
 
 var playable = function(url) {
@@ -99,7 +105,7 @@ var changeSong = function(direction) {
   Songs.update({_id: currentSong[direction]}, {$set: {current: true}}, function() {
     putCurrentOnPlayer();
   }); 
-}
+};
 
 var deleteSong = function(song) {
   var isCurrent = song.current;
@@ -117,7 +123,7 @@ var deleteSong = function(song) {
   }
 
   Songs.remove({_id: song._id});
-}
+};
 
 var putCurrentOnPlayer = function() {
   var $current = $('#current .url'),
@@ -128,5 +134,8 @@ var putCurrentOnPlayer = function() {
   $player[0].pause();
   $player[0].load();
   $player[0].play()
-}
+};
 
+var mergeSort = function(head, list) {
+  return list;
+}

@@ -1,9 +1,17 @@
 var pl = Template.playlist,
-    p = Template.player;
+    p = Template.player,
+    h = Template.header;
 
 pl.queued_songs = function() {
-  var songs = Songs.find({playlistId: Session.get("playlistId"), current: false}).fetch();
-	return songs;
+  var songs = Songs.find({playlistId: Session.get("playlistId"), current: false}).fetch(),
+      sortedSongs = songs;
+      currentSong = Songs.findOne({playlistId: Session.get("playlistId"), current: true});
+
+  if (currentSong) {
+    sortedSongs = mergeSort(currentSong, songs);
+  }
+
+	return sortedSongs;
 }
 
 pl.current = function() {
@@ -14,14 +22,10 @@ pl.current = function() {
 p.isDJ = function() {
   // var user = Users.findOne({_id: Session.get("userId"), playlistId: Session.get("playlistId")});
 
-  return true /*&& user.dj*/;
+  return /*user && user.dj*/ true;
 }
 
 pl.events = {
-  'click #add_songs': function() {
-    $('#add_view').show();
-    $('#playlist_view').hide();
-  },
   'click .delete': function(e) {
     var id = $(e.target).parent().parent().children('.id').html().trim(), 
         currentSong = Songs.findOne({_id: id});
@@ -36,5 +40,26 @@ p.events = {
   },
   'click #prev': function() {
     changeSong("prev");
+  }
+}
+
+h.events = {
+  'click #back': function() {
+    clearTemp();
+    
+    $('#container').animate({
+      left: '0px'
+    }, 250);
+
+    $('#add_songs').show();
+    $('#back').hide();
+  },
+  'click #add_songs': function() {
+    $('#container').animate({
+      left: -window.innerWidth + 'px'
+    }, 250);
+
+    $('#add_songs').hide();
+    $('#back').show();
   }
 }

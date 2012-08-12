@@ -1,32 +1,52 @@
 <head>
+  <meta charset="utf-8">
+  <meta http-equiv="X-UA-Compatible" content="IE=edge,chrome=1">
+
   <title>Butternife</title>
+
+  <meta name="HandheldFriendly" content="true">  
+  <meta name="viewport" content="width=device-width, initial-scale=1,maximum-scale=1,user-scalable=no">
+  <!--[if lt IE 9]>  
+  <script src="http://html5shim.googlecode.com/svn/trunk/html5.js"></script>  
+  <script src="http://css3-mediaqueries-js.googlecode.com/svn/trunk/css3-mediaqueries.js"></script>  
+  <![endif]-->  
 </head>
 
 <body>
+  <header>
+    {{> header}}
+  </header>
   <div id="player">
     {{> player}}
   </div>
-  <div id="playlist_view">
-    {{> playlist}}
-  </div>
-  <div id="add_view">
-    {{> addSong}}
+  <div id="container">
+    <div id="playlist_view">
+      {{> playlist}}
+    </div>
+    <div id="add_view">
+      {{> addSong}}
+    </div>
   </div>
 </body>
 
+<template name="header">
+  <input type="button" id="back" value="Back" />
+  <p>Butternife</p>
+  <input type="button" id="add_songs" value="Add Song" />
+</template>
+
 <template name="player">
   {{#if isDJ}}
+    <input type="button" id="prev" value="«" />
     <audio controls="controls" autoplay='autoplay'>
       <source src="" />
       Your browser does not support the audio tag.
     </audio>
-    <input type="button" id="next" value="next" />
-    <input type="button" id="prev" value="prev" />
+    <input type="button" id="next" value="»" />
   {{/if}}
 </template>
 
 <template name="playlist">
-  <input type="button" id="add_songs" value="Add Song" />
   <div id="current">
     {{#each current}}
       {{> song}}
@@ -40,15 +60,16 @@
 </template>
 
 <template name="song">
-  <div>{{song}}</div>
-  <div>{{artist}}</div>
-  <div class="id">{{_id}}</div>
-  <div><a class="delete">Delete</a></div>
-  <div class="url">{{url}}</div>
+  <div class="row">
+    <div class="song">{{song}}</div>
+    <div class="artist">{{artist}}</div>
+    <div class="id">{{_id}}</div>
+    <div><a class="delete">✖</a></div>
+    <div class="url">{{url}}</div>
+  </div>
 </template>
 
 <template name="addSong">
-  <input type="button" id="back" value="Back" />
   <form>
     <input type="text" id="search_box" />
     <input type="submit" id="search" value="Search" />
@@ -66,9 +87,9 @@
         <td class="artist">{{artist}}</td>
         <td class="url">{{url}}</td>
         {{#if inPlaylist}}
-          <td><a class="add remove">Add</a></td>
+          <td><a class="add remove">✖</a></td>
         {{else}}
-          <td><a class="add">Add</a></td>
+          <td><a class="add">✖</a></td>
         {{/if}}
       </tr>
     {{/each}}

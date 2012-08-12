@@ -2,13 +2,6 @@ var as = Template.addSong,
     ls = Template.listSongs;
 
 as.events = {
-  'click #back': function() {
-    clearTemp();
-    
-    $('#add_view').hide();
-    $('#playlist_view').show();
-  },
-
   'click #search': function(e) {
   	e.preventDefault();
   	e.stopPropagation();
@@ -28,6 +21,7 @@ as.events = {
       added: function() {
         if ($spinner.css("display") !== "none") {
           $spinner.hide();
+          $('#more').show();
         }
       }
     });
@@ -57,7 +51,6 @@ as.events = {
           current, lastSongId;
 
       current = (currentSong !== undefined ? false : true);
-
       //append song
       lastSongId = Songs.insert({song: $tr.children('.song').html(),
         artist: $tr.children('.artist').html(),
@@ -75,8 +68,10 @@ as.events = {
         Songs.update({_id: prevId}, {$set: {next: lastSongId}});
         Songs.update({_id: lastSongId}, {$set: {prev: prevId, next: nextId}});
       } else {
-        Songs.update({_id: lastSongId}, {$set: {prev: lastSongId, next: lastSongId}});
-        putCurrentOnPlayer();
+        Songs.update({_id: lastSongId}, {$set: {prev: lastSongId, next: lastSongId}}, function() {
+          putCurrentOnPlayer();
+        });
+        
       }
     }
 
