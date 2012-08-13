@@ -100,13 +100,13 @@ header {
 
 #display {
 	width: 100%;
-	height: inherit;
+	height: 100%;
 	position: relative;
 }
 
 #container {
 	width: 200%;
-	height: inherit;
+	height: 100%;
 	position: absolute;
 	top: 0;
 	left: 0;
@@ -116,7 +116,7 @@ header {
 		display: inline-block;
 		padding: 10px 5px;
 		overflow: auto;
-		height: inherit;
+		height: 80%;
 	}
 
 	#playlist_view {
@@ -213,5 +213,13 @@ header {
 
 	#back, #add_songs {
 		display: none !important;
+	}
+
+	#playlist_view {
+		border-right: 1px solid #000;
+	}
+	
+	#playlist_view, #add_view {
+		height: 90% !important;
 	}
 }

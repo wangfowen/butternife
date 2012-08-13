@@ -42,10 +42,13 @@ Meteor.startup(function() {
   var audio = document.getElementsByTagName('audio')[0];
   
   if (audio) {
+    //auto play next song at end of current song
     audio.addEventListener("ended", function() {
       changeSong("next");
     });
 
+    //hacky way to set initial src without it autoplaying
+    //yet have autoplay on every other instance
     isSong = Meteor.setInterval(function() {
       var currentUrl = $('#current .url');
 
@@ -65,8 +68,6 @@ Meteor.startup(function() {
   // window.onbeforeunload = function() {
   //   Users.remove({_id: Session.get("userId"), playlistId: Session.get("playlistId")});
   // };
-
-  //set starting song on player
 
 var newTemp = function() {
   var tempPlaylistId = Playlists.insert({temp: true});
@@ -89,6 +90,7 @@ var clearTemp = function() {
   $('#more').hide();
 };
 
+//allow soundcloud songs to play
 var playable = function(url) {
   if (url.indexOf('soundcloud') !== -1) {
     url += (url.indexOf("?") === -1 ? "?" : "&") + "client_id=439f9fd050fe1989287ec13937c89894";
@@ -113,20 +115,21 @@ var deleteSong = function(song) {
   var isCurrent = song.current;
 
   Songs.update({_id: song.prev}, {$set: {next: song.next}});
-  Songs.update({_id: song.next}, {$set: {prev: song.prev}});
+  Songs.update({_id: song.next}, {$set: {prev: song.prev}}, function() {
+    if (isCurrent) {
+      var queue = Songs.find({playlistId: Session.get("playlistId"), current: false}).fetch();
+      if (queue.length > 0) {
+        changeSong("next");
+      } else {
+        var $player = $('#player audio');
 
-  if (isCurrent) {
-    var queue = Songs.find({playlistId: Session.get("playlistId"), current: false}).fetch();
-    if (queue.length > 0) {
-      changeSong("next");
-    } else {
-      var $player = $('#player audio');
-
-      $player[0].pause();
-      $player.children('source').removeAttr('src');
-      $player[0].load();
+        $player[0].pause();
+        $player.children('source').removeAttr('src');
+        $player[0].load();
+      }
     }
-  }
+
+  });
 
   Songs.remove({_id: song._id});
 };
@@ -146,15 +149,23 @@ var sortSongs = function(head, list) {
   var sortedList = [],
       current = head;
 
-  for (var j = 0; j < list.length; j++) {
-    for (var i = 0; i < list.length; i++) {
-      if (list[i]._id === current) {
-        sortedList.push(list[i]);
+  try {
+    if (list.length > 0) {
+      for (var j = 0; j < list.length; j++) {
+        for (var i = 0; i < list.length; i++) {
+          if (list[i]._id === current) {
+            sortedList.push(list[i]);
+          }
+        }
+
+        current = sortedList[sortedList.length - 1].next;
       }
     }
 
-    current = sortedList[sortedList.length - 1].next;
+    return sortedList;
+  } catch (err) {
+    //data wasn't done updating, try again
+    sortSongs(Songs.findOne({playlistId: Session.get("playlistId"), current: true}), 
+      Songs.find({playlistId: Session.get("playlistId"), current: false}).fetch());
   }
-
-  return sortedList;
 }
