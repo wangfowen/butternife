@@ -48,31 +48,31 @@ as.events = {
     //add the song
     } else {
       var currentSong = Songs.findOne({playlistId: playlistId, current: true}),
-          current, lastSongId;
+          current;
 
       current = (currentSong !== undefined ? false : true);
       //append song
-      lastSongId = Songs.insert({song: $row.children('.song').html(),
+      Songs.insert({song: $row.children('.song').html(),
         artist: $row.children('.artist').html(),
         url: url,
         playlistId: playlistId,
         current: current
+      }, function(error, lastSongId) {
+        //update the prev and next if it's not the current
+        if (!current) {
+          var prevId = Songs.findOne({playlistId: playlistId, next: currentSong._id})._id,
+              nextId = currentSong._id;
+
+          Songs.update({_id: nextId}, {$set: {prev: lastSongId}});
+          Songs.update({_id: prevId}, {$set: {next: lastSongId}});
+          Songs.update({_id: lastSongId}, {$set: {prev: prevId, next: nextId}});
+        } else {
+          Songs.update({_id: lastSongId}, {$set: {prev: lastSongId, next: lastSongId}}, function() {
+            putCurrentOnPlayer();
+          });
+          
+        }
       });
-
-      //update the prev and next if it's not the current
-      if (!current) {
-        var prevId = Songs.findOne({playlistId: playlistId, next: currentSong._id})._id,
-            nextId = currentSong._id;
-
-        Songs.update({_id: nextId}, {$set: {prev: lastSongId}});
-        Songs.update({_id: prevId}, {$set: {next: lastSongId}});
-        Songs.update({_id: lastSongId}, {$set: {prev: prevId, next: nextId}});
-      } else {
-        Songs.update({_id: lastSongId}, {$set: {prev: lastSongId, next: lastSongId}}, function() {
-          putCurrentOnPlayer();
-        });
-        
-      }
     }
 
     $target.toggleClass('remove');

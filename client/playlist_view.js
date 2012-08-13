@@ -14,6 +14,11 @@ pl.queued_songs = function() {
 	return sortedSongs;
 }
 
+pl.isCurrent = function() {
+  var songs = Songs.find({playlistId: Session.get("playlistId"), current: true}).fetch();
+  return songs.length > 0;
+}
+
 pl.current = function() {
 	var songs = Songs.find({playlistId: Session.get("playlistId"), current: true}).fetch();
   return songs;
@@ -22,7 +27,7 @@ pl.current = function() {
 p.isDJ = function() {
   // var user = Users.findOne({_id: Session.get("userId"), playlistId: Session.get("playlistId")});
 
-  return /*user && user.dj*/ true;
+  return true;//user && user.dj;
 }
 
 pl.events = {
@@ -48,7 +53,7 @@ h.events = {
     clearTemp();
     
     $('#container').animate({
-      left: '0px'
+      "margin-left": '0px'
     }, 250);
 
     $('#add_songs').show();
@@ -56,7 +61,7 @@ h.events = {
   },
   'click #add_songs': function() {
     $('#container').animate({
-      left: -window.innerWidth + 'px'
+      "margin-left": -window.innerWidth + 'px'
     }, 250);
 
     $('#add_songs').hide();

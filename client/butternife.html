@@ -19,6 +19,7 @@
   <div id="player">
     {{> player}}
   </div>
+  <div id="display">
   <div id="container">
     <div id="playlist_view">
       {{> playlist}}
@@ -26,6 +27,7 @@
     <div id="add_view">
       {{> addSong}}
     </div>
+  </div>
   </div>
 </body>
 
@@ -47,6 +49,7 @@
 </template>
 
 <template name="playlist">
+  {{#if isCurrent}}
   <div id="current">
     {{#each current}}
       {{> song}}
@@ -57,6 +60,9 @@
       {{> song}}
     {{/each}}
   </div>
+  {{else}}
+    <p id="no_songs">You do not have any songs on the playlist currently. Please add some!</p>
+  {{/if}}
 </template>
 
 <template name="song">

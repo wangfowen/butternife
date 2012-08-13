@@ -101,10 +101,12 @@ var changeSong = function(direction) {
   var currentSong = Songs.findOne({playlistId: Session.get("playlistId"), current: true});
 
   //change new song to be the current
-  Songs.update({_id: currentSong._id}, {$set: {current: false}});
-  Songs.update({_id: currentSong[direction]}, {$set: {current: true}}, function() {
-    putCurrentOnPlayer();
-  }); 
+  if (currentSong) {
+    Songs.update({_id: currentSong._id}, {$set: {current: false}});
+    Songs.update({_id: currentSong[direction]}, {$set: {current: true}}, function() {
+      putCurrentOnPlayer();
+    }); 
+  }
 };
 
 var deleteSong = function(song) {

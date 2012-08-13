@@ -13,6 +13,7 @@ body, html {
 	font-family: 'Trebuchet MS', sans-serif;
 	background: #A9B0B3;
 	width: 100%;
+	height: 100%;
 	overflow: hidden;
 }
 
@@ -97,16 +98,25 @@ header {
 	}
 }
 
+#display {
+	width: 100%;
+	height: inherit;
+	position: relative;
+}
+
 #container {
 	width: 200%;
+	height: inherit;
 	position: absolute;
-	display: block;
+	top: 0;
+	left: 0;
 
 	#playlist_view, #add_view {
 		width: 48%;
 		display: inline-block;
 		padding: 10px 5px;
-		overflow: scroll;
+		overflow: auto;
+		height: inherit;
 	}
 
 	#playlist_view {
@@ -122,6 +132,11 @@ header {
 			top: 30%;
 			right: 3%;
 			font-size: 24px;
+		}
+
+		#no_songs {
+			text-align: center;
+			margin-top: 50%;
 		}
 	}
 
@@ -160,9 +175,9 @@ header {
 			-webkit-transform: rotate(45deg);
 			-moz-transform: rotate(45deg);
 			transform: rotate(45deg);
-			-webkit-transition: .5s all;
-			-moz-transition: .5s all;
-			transition: .5s all;
+			-webkit-transition: .3s all;
+			-moz-transition: .3s all;
+			transition: .3s all;
 			.border-radius(50%);
 			background: #4EA321;
 			padding: 0px 5px 1px;
@@ -193,6 +208,7 @@ header {
 @media only screen and (min-width: 760px) {
 	#container {
 		width: 100%;
+		height: 100%;
 	}
 
 	#back, #add_songs {
