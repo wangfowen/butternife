@@ -80,18 +80,18 @@
 </template>
 
 <template name="listSongs">
-  <table id="add_list">
+  <div id="add_list">
     {{#each list_songs}}
-      <tr>
-        <td class="song">{{song}}</td>
-        <td class="artist">{{artist}}</td>
-        <td class="url">{{url}}</td>
+      <div class="row">
+        <div class="song">{{song}}</div>
+        <div class="artist">{{artist}}</div>
+        <div class="url">{{url}}</div>
         {{#if inPlaylist}}
-          <td><a class="add remove">✖</a></td>
+          <div><a class="add remove">✖</a></div>
         {{else}}
-          <td><a class="add">✖</a></td>
+          <div><a class="add">✖</a></div>
         {{/if}}
-      </tr>
+      </div>
     {{/each}}
-  </table>
+  </div>
 </template>

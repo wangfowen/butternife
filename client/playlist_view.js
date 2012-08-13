@@ -8,7 +8,7 @@ pl.queued_songs = function() {
       currentSong = Songs.findOne({playlistId: Session.get("playlistId"), current: true});
 
   if (currentSong) {
-    sortedSongs = mergeSort(currentSong, songs);
+    sortedSongs = sortSongs(currentSong.next, songs);
   }
 
 	return sortedSongs;
@@ -27,7 +27,7 @@ p.isDJ = function() {
 
 pl.events = {
   'click .delete': function(e) {
-    var id = $(e.target).parent().parent().children('.id').html().trim(), 
+    var id = $(e.target).parents('.row').children('.id').html().trim(), 
         currentSong = Songs.findOne({_id: id});
 
     deleteSong(currentSong);

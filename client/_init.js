@@ -118,7 +118,11 @@ var deleteSong = function(song) {
     if (queue.length > 0) {
       changeSong("next");
     } else {
-      $('#player audio source').removeAttr('src');
+      var $player = $('#player audio');
+
+      $player[0].pause();
+      $player.children('source').removeAttr('src');
+      $player[0].load();
     }
   }
 
@@ -136,6 +140,19 @@ var putCurrentOnPlayer = function() {
   $player[0].play()
 };
 
-var mergeSort = function(head, list) {
-  return list;
+var sortSongs = function(head, list) {
+  var sortedList = [],
+      current = head;
+
+  for (var j = 0; j < list.length; j++) {
+    for (var i = 0; i < list.length; i++) {
+      if (list[i]._id === current) {
+        sortedList.push(list[i]);
+      }
+    }
+
+    current = sortedList[sortedList.length - 1].next;
+  }
+
+  return sortedList;
 }

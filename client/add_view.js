@@ -35,9 +35,9 @@ as.events = {
   	e.stopPropagation();
 
     var $target = $(e.target), 
-        $tr = $target.parents('tr'),
+        $row = $target.parents('.row'),
         playlistId = Session.get("playlistId"),
-        url = playable($tr.children('.url').html());
+        url = playable($row.children('.url').html());
 
     //remove song from playlist if click one already on playlist
     if ($target.hasClass('remove')) {
@@ -52,8 +52,8 @@ as.events = {
 
       current = (currentSong !== undefined ? false : true);
       //append song
-      lastSongId = Songs.insert({song: $tr.children('.song').html(),
-        artist: $tr.children('.artist').html(),
+      lastSongId = Songs.insert({song: $row.children('.song').html(),
+        artist: $row.children('.artist').html(),
         url: url,
         playlistId: playlistId,
         current: current
@@ -79,7 +79,7 @@ as.events = {
   },
 
   'click #more': function() {
-    var start = $('#add_list').children().children('tr').length;
+    var start = $('#add_list .row').length;
 
     if (start > 0) {
       Meteor.apply('searchMusic', [Session.get('searchResult'), Session.get('addId'), start]);

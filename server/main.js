@@ -16,7 +16,7 @@ Meteor.methods({
 
 		start = start || 0;
 
-		Meteor.http.get('https://ex.fm/api/v3/song/search/' + encodeURIComponent(music) + '?results=30&start=' + start, {}, function(error, data) {
+		Meteor.http.get('https://ex.fm/api/v3/song/search/' + encodeURIComponent(music) + '?results=15&start=' + start, {}, function(error, data) {
 
 			for (song in data.data.songs) {
 				var s = data.data.songs[song];
