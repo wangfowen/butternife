@@ -137,6 +137,10 @@ header {
 			margin-bottom: 10px;
 		}
 
+		#playlist > div {
+			cursor: move;
+		}
+
 		.delete {
 			position: absolute;
 			top: 30%;
@@ -144,9 +148,13 @@ header {
 			font-size: 24px;
 		}
 
-		#no_songs {
+		#no_songs_big, #no_songs_small {
 			text-align: center;
 			margin-top: 50%;
+		}
+
+		#no_songs_big {
+			display: none;
 		}
 	}
 
@@ -192,7 +200,7 @@ header {
 			transition: .3s all;
 			.border-radius(50%);
 			background: #4EA321;
-			padding: 0px 4px;
+			padding: 2px 5px 0;
 			position: absolute;
 			top: 30%;
 			right: 3%;
@@ -204,7 +212,7 @@ header {
 				-moz-transform: rotate(0deg);
 				transform: rotate(0deg);
 				background: #E04B2E;
-				padding: 1px 5px 0px;
+				padding: 4px 6px 0px;
 			}
 		}
 
@@ -240,5 +248,13 @@ header {
 		padding: 4px 8px;
 		font-size: 16px;
 		.border-radius(5px);
+	}
+
+	#no_songs_small {
+		display: none;
+	}
+
+	#no_songs_big {
+		display: block !important;
 	}
 }

@@ -39,7 +39,30 @@ Meteor.startup(function() {
   $('#back').hide();
   $('#more').hide();
 
-  var audio = document.getElementsByTagName('audio')[0];
+  var audio = document.getElementsByTagName('audio')[0],
+      $playlist = $('#playlist');
+
+  $playlist.sortable({start: function(e, ui) {
+      var prev = Songs.findOne({url: $($playlist.children()[ui.item.index() - 1]).children('.url').html()}) || Songs.findOne({current: true}),
+          next = Songs.findOne({prev: prev.next});
+
+      Session.set("old_prev", prev._id);
+      Session.set("old_next", next._id);
+    },
+    update: function(e, ui) {
+      var prev = Songs.findOne({url: $($playlist.children()[ui.item.index() - 1]).children('.url').html()}) || Songs.findOne({current: true}),
+          next = Songs.findOne({next: prev.next}),
+          current = Songs.findOne({url: $($playlist.children()[ui.item.index()]).children('.url').html()}),
+          oldPrevId = Session.get("old_prev"),
+          oldNextId = Session.get("old_next");
+      
+      // Songs.update({_id: oldPrevId}, {$set: {next: oldNextId}});
+      // Songs.update({_id: oldNextId}, {$set: {prev: oldPrevId}});
+      // Songs.update({_id: prev._id}, {$set: {next: current._id}});
+      // Songs.update({_id: next._id}, {$set: {prev: current._id}});
+      // Songs.update({_id: current._id}, {$set: {prev: prev._id, next: next._id}});
+    }
+  });
   
   if (audio) {
     //auto play next song at end of current song

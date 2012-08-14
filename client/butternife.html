@@ -49,20 +49,24 @@
 </template>
 
 <template name="playlist">
-  {{#if isCurrent}}
   <div id="current">
+    {{#if isCurrent}}
     {{#each current}}
       {{> song}}
     {{/each}}
+    {{/if}}
   </div>
   <div id="playlist">
+    {{#if isCurrent}}
     {{#each queued_songs}}
       {{> song}}
     {{/each}}
+    {{/if}}
   </div>
-  {{else}}
-    <p id="no_songs">You do not have any songs on the playlist currently. Please add some!</p>
-  {{/if}}
+  {{#unless isCurrent}}
+    <p id="no_songs_big">You do not have any songs on the playlist currently. Please search for some on the right and add them!</p>
+    <p id="no_songs_small">You do not have any songs on the playlist currently. Click the button at the top right and add some!</p>
+  {{/unless}}
 </template>
 
 <template name="song">
