@@ -99,14 +99,19 @@ var playable = function(url) {
   return url;
 };
 
-var changeSong = function(direction) {
+var changeSong = function(direction, callback) {
   var currentSong = Songs.findOne({playlistId: Session.get("playlistId"), current: true});
+
+  callback = callback || undefined;
 
   //change new song to be the current
   if (currentSong) {
     Songs.update({_id: currentSong._id}, {$set: {current: false}});
     Songs.update({_id: currentSong[direction]}, {$set: {current: true}}, function() {
       putCurrentOnPlayer();
+      if (callback) {
+        callback();
+      }
     }); 
   }
 };
@@ -119,18 +124,22 @@ var deleteSong = function(song) {
     if (isCurrent) {
       var queue = Songs.find({playlistId: Session.get("playlistId"), current: false}).fetch();
       if (queue.length > 0) {
-        changeSong("next");
+        changeSong("next", function() {
+          Songs.remove({_id: song._id});
+        });
       } else {
         var $player = $('#player audio');
 
         $player[0].pause();
         $player.children('source').removeAttr('src');
         $player[0].load();
+
+        Songs.remove({_id: song._id});
       }
+    } else {
+      Songs.remove({_id: song._id});
     }
   });
-
-  Songs.remove({_id: song._id});
 };
 
 var putCurrentOnPlayer = function() {
@@ -147,17 +156,19 @@ var putCurrentOnPlayer = function() {
 var sortSongs = function(head, list) {
   var sortedList = [],
       current = head;
-
-  if (head && list.length > 0) {
-    for (var j = 0; j < list.length; j++) {
-      for (var i = 0; i < list.length; i++) {
-        if (list[i]._id === current) {
-          sortedList.push(list[i]);
+  try {
+    if (head && list.length > 0) {
+      for (var j = 0; j < list.length; j++) {
+        for (var i = 0; i < list.length; i++) {
+          if (list[i]._id === current) {
+            sortedList.push(list[i]);
+          }
         }
-      }
 
-      current = sortedList[sortedList.length - 1].next;
+        current = sortedList[sortedList.length - 1].next;
+      }
     }
+  } catch(err) {
   }
 
   return sortedList;

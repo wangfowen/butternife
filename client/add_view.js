@@ -70,13 +70,13 @@ as.events = {
         Songs.update({_id: nextId}, {$set: {prev: lastSongId}});
         Songs.update({_id: prevId}, {$set: {next: lastSongId}});
       } else {
-        console.log("here");
         lastSongId = Songs.insert({song: $row.children('.song').html(),
           artist: $row.children('.artist').html(),
           url: url,
           playlistId: playlistId,
           current: current
         }, function() {
+            Songs.update({_id: lastSongId}, {$set: {next: lastSongId, prev: lastSongId}});
             putCurrentOnPlayer();
         });
       }
