@@ -1,3 +1,8 @@
+@font-face {
+	font-family: Sreda;
+	src: url('/Sreda.ttf');
+}
+
 * {
 	padding: 0;
 	margin: 0;
@@ -10,11 +15,12 @@
 }
 
 body, html {
-	font-family: 'Trebuchet MS', sans-serif;
-	background: #A9B0B3;
+	font-family: Sreda, Rockwell, serif;
+	background: #2C3034;
 	width: 100%;
 	height: 100%;
 	overflow: hidden;
+	color: #973A3F;
 }
 
 .url, .id {
@@ -25,12 +31,13 @@ input[type=button], input[type=submit], a {
 	border: none;
 	outline: none;
 	cursor: pointer;
+	font-family: Sreda, Rockwell, serif;
 }
 
 .row {
 	position: relative;
 	padding: 10px 2px 10px 8px;
-	border: 1px solid #272822;
+	border: 1px solid #828283;
 	margin: 3px 0;
 
 	> div {
@@ -55,46 +62,49 @@ input[type=button], input[type=submit], a {
 
 header {
 	text-align: center;
-	font-size: 30px;
+	font-size: 20px;
 	padding: 2px 0 5px;
+	height: 3%;
+	margin-top: 1%;
 
 	#add_songs, #back {
+		font-size: 10px;
 		position: absolute;
-		top: 4px;
-		background: #A4E66B;
-		padding: 4px 8px;
-		font-size: 16px;
-		.border-radius(5px);
+		top: 1%;
+		background: #828283;
+		.border-radius(2px);
 	}
 
 	#add_songs {
-		right: 4px;
+		right: 1%;
 	}
 
 	#back {
-		left: 4px;
+		left: 1%;
 	}
 }
 
 #player {
 	margin: auto;
 	text-align: center;
+	height: 7%;
+	margin-top: 1%;
+	z-index: 5;
 
 	#prev, #next {
-		background: #313333;
-		color: #E9E9E9;
 		font-size: 42px;
-		margin: 0;
-		line-height: 23px;
 		.border-radius(7px);
+		height: 29px;
+		margin: 1px;
+		padding: 0 8px;
 	}
 
 	#prev {
-		padding: 0 4px 7px 2px;
+		background: #18191A url('/prev.png') no-repeat center;
 	}
 
 	#next {
-		padding: 0 2px 7px 4px;
+		background: #18191A url('/next.png') no-repeat center;
 	}
 }
 
@@ -116,14 +126,14 @@ header {
 		display: inline-block;
 		padding: 10px 5px;
 		overflow: auto;
-		height: 80%;
+		height: 88%;
 	}
 
 	#playlist_view {
 		float: left;
 
 		#current .row {
-			border: 2px solid #F0D41A;
+			border: 2px solid #918A62;
 			margin-bottom: 10px;
 		}
 
@@ -150,12 +160,14 @@ header {
 			#search_box {
 				font-size: 20px;
 				padding: 5px;
-				width: 260px;
+				width: 70%;
 			}
 
 			#search {
 				font-size: 18px;
 				padding: 5px;
+				margin: 0 1px;
+				background: #828283;
 			}
 
 			.spinner {
@@ -185,6 +197,7 @@ header {
 			top: 30%;
 			right: 3%;
 			font-size: 24px;
+			color: #000;
 
 			&.remove {
 				-webkit-transform: rotate(0deg);
@@ -216,10 +229,16 @@ header {
 	}
 
 	#playlist_view {
-		border-right: 1px solid #000;
+		border-right: 1px solid #828283;
 	}
-	
-	#playlist_view, #add_view {
-		height: 90% !important;
+
+	header {
+		font-size: 30px;
+	}
+
+	#add_songs, #back {
+		padding: 4px 8px;
+		font-size: 16px;
+		.border-radius(5px);
 	}
 }

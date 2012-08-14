@@ -149,23 +149,17 @@ var sortSongs = function(head, list) {
   var sortedList = [],
       current = head;
 
-  try {
-    if (list.length > 0) {
-      for (var j = 0; j < list.length; j++) {
-        for (var i = 0; i < list.length; i++) {
-          if (list[i]._id === current) {
-            sortedList.push(list[i]);
-          }
+  if (list.length > 0) {
+    for (var j = 0; j < list.length; j++) {
+      for (var i = 0; i < list.length; i++) {
+        if (list[i]._id === current) {
+          sortedList.push(list[i]);
         }
-
-        current = sortedList[sortedList.length - 1].next;
       }
-    }
 
-    return sortedList;
-  } catch (err) {
-    //data wasn't done updating, try again
-    sortSongs(Songs.findOne({playlistId: Session.get("playlistId"), current: true}), 
-      Songs.find({playlistId: Session.get("playlistId"), current: false}).fetch());
+      current = sortedList[sortedList.length - 1].next;
+    }
   }
+
+  return sortedList;
 }
