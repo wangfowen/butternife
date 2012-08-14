@@ -9,25 +9,27 @@ as.events = {
   	clearTemp();
   	newTemp();
 
-    var $spinner = $('.spinner'),
+    var $spinner = $('form .spinner'),
         searchResult = $('#search_box').val();
 
-    $spinner.show();
+    if (searchResult) {
+      $spinner.show();
 
-    var playlistId = Session.get('addId'),
-        songs = Songs.find({playlistId: playlistId});
-        
-    songs.observe({
-      added: function() {
-        if ($spinner.css("display") !== "none") {
-          $spinner.hide();
-          $('#more').show();
+      var playlistId = Session.get('addId'),
+          songs = Songs.find({playlistId: playlistId});
+          
+      songs.observe({
+        added: function() {
+          if ($spinner.css("display") !== "none") {
+            $spinner.hide();
+            $('#more').show();
+          }
         }
-      }
-    });
+      });
 
-  	Meteor.apply('searchMusic', [searchResult, playlistId]);
-    Session.set('searchResult', searchResult);
+    	Meteor.apply('searchMusic', [searchResult, playlistId]);
+      Session.set('searchResult', searchResult);
+    }
   },
 
   'click .add': function(e) {
@@ -51,27 +53,32 @@ as.events = {
           current, lastSongId;
 
       current = (currentSong !== undefined ? false : true);
-      //append song
-      lastSongId = Songs.insert({song: $row.children('.song').html(),
-        artist: $row.children('.artist').html(),
-        url: url,
-        playlistId: playlistId,
-        current: current
-      });
 
-      //update the prev and next if it's not the current
       if (!current) {
         var prevId = Songs.findOne({playlistId: playlistId, next: currentSong._id})._id,
             nextId = currentSong._id;
 
+        lastSongId = Songs.insert({song: $row.children('.song').html(),
+          artist: $row.children('.artist').html(),
+          url: url,
+          playlistId: playlistId,
+          current: current,
+          prev: prevId, 
+          next: nextId
+        });
+
         Songs.update({_id: nextId}, {$set: {prev: lastSongId}});
         Songs.update({_id: prevId}, {$set: {next: lastSongId}});
-        Songs.update({_id: lastSongId}, {$set: {prev: prevId, next: nextId}});
       } else {
-        Songs.update({_id: lastSongId}, {$set: {prev: lastSongId, next: lastSongId}}, function() {
-          putCurrentOnPlayer();
+        console.log("here");
+        lastSongId = Songs.insert({song: $row.children('.song').html(),
+          artist: $row.children('.artist').html(),
+          url: url,
+          playlistId: playlistId,
+          current: current
+        }, function() {
+            putCurrentOnPlayer();
         });
-        
       }
     }
 

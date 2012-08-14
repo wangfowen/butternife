@@ -128,7 +128,6 @@ var deleteSong = function(song) {
         $player[0].load();
       }
     }
-
   });
 
   Songs.remove({_id: song._id});
@@ -149,7 +148,7 @@ var sortSongs = function(head, list) {
   var sortedList = [],
       current = head;
 
-  if (list.length > 0) {
+  if (head && list.length > 0) {
     for (var j = 0; j < list.length; j++) {
       for (var i = 0; i < list.length; i++) {
         if (list[i]._id === current) {
