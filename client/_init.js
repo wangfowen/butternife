@@ -51,16 +51,16 @@ Meteor.startup(function() {
     },
     update: function(e, ui) {
       var prev = Songs.findOne({url: $($playlist.children()[ui.item.index() - 1]).children('.url').html()}) || Songs.findOne({current: true}),
-          next = Songs.findOne({next: prev.next}),
+          next = Songs.findOne({_id: prev.next}),
           current = Songs.findOne({url: $($playlist.children()[ui.item.index()]).children('.url').html()}),
           oldPrevId = Session.get("old_prev"),
           oldNextId = Session.get("old_next");
       
-      // Songs.update({_id: oldPrevId}, {$set: {next: oldNextId}});
-      // Songs.update({_id: oldNextId}, {$set: {prev: oldPrevId}});
-      // Songs.update({_id: prev._id}, {$set: {next: current._id}});
-      // Songs.update({_id: next._id}, {$set: {prev: current._id}});
-      // Songs.update({_id: current._id}, {$set: {prev: prev._id, next: next._id}});
+      Songs.update({_id: oldPrevId}, {$set: {next: oldNextId}});
+      Songs.update({_id: oldNextId}, {$set: {prev: oldPrevId}});
+      Songs.update({_id: prev._id}, {$set: {next: current._id}});
+      Songs.update({_id: next._id}, {$set: {prev: current._id}});
+      Songs.update({_id: current._id}, {$set: {prev: prev._id, next: next._id}});
     }
   });
   

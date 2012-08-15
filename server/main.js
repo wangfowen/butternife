@@ -21,9 +21,9 @@ Meteor.methods({
 			for (song in data.data.songs) {
 				var s = data.data.songs[song];
 
-				Songs.insert({song: s.title, 
-					artist: s.artist, 
-					album: s.album,
+				Songs.insert({song: decodeURIComponent(Encoder.htmlDecode(s.title)),
+					artist: decodeURIComponent(Encoder.htmlDecode(s.artist)),
+					album: decodeURIComponent(Encoder.htmlDecode(s.album)),
 					url: s.url,
 					playlistId: playlistId
 				})
