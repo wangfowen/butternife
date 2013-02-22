@@ -245,11 +245,18 @@ header {
 		}
 
 		#more {
+			background: @button;
+			color: @font;
 			font-size: 18px;
 			padding: 5px;
 			.border-radius(5px);
 			margin: 8px auto;
 			display: block;
+		}
+
+		#more:active, #more:hover {
+			color: @background;
+			background: @active;
 		}
 	}
 }

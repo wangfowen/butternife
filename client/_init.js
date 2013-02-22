@@ -1,5 +1,5 @@
 Meteor.startup(function() {
-  var uId = Users.insert({dj: false}),
+  var uId = Users.insert({}),
     pId,
     PlaylistRouter = Backbone.Router.extend({
       routes: {
@@ -20,7 +20,6 @@ Meteor.startup(function() {
       },
       generatePlaylist: function() {
         pId = Playlists.insert({temp: false, repeat: true, shuffle: false});
-        Users.update({_id: uId}, {$set: {dj: true}});
         this.setPlaylist(pId);
       },
       setPlaylist: function (playlistId) {

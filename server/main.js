@@ -12,8 +12,6 @@ Meteor.publish('users', function(playlistId) {
 
 Meteor.methods({
 	searchMusic: function(music, playlistId, start) {
-		var future = new Future();
-
 		start = start || 0;
 
 		Meteor.http.get('https://ex.fm/api/v3/song/search/' + encodeURIComponent(music) + '?results=15&start=' + start, {}, function(error, data) {
@@ -28,10 +26,6 @@ Meteor.methods({
 					playlistId: playlistId
 				})
 			};
-
-			future.resolver()();
 		});
-
-		Future.wait(future);
 	}
 });

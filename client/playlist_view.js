@@ -24,12 +24,6 @@ pl.current = function() {
   return songs;
 }
 
-p.isDJ = function() {
-  // var user = Users.findOne({_id: Session.get("userId"), playlistId: Session.get("playlistId")});
-
-  return true;//user && user.dj;
-}
-
 pl.events = {
   'click .delete': function(e) {
     var id = $(e.target).parents('.row').children('.id').html().trim(), 
